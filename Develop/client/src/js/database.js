@@ -32,6 +32,13 @@ export const getDb = async () => {
     const db = await openDB('jate', 1);
     const tx = db.transaction('jate', 'readonly');
     const store = tx.objectStore('jate');
+    const allContent = await store.getAll();
+    await tx.complete;
+    console.log('Content retrieved from the database:', allContent);
+    return allContent;
+  } catch (error) {
+    console.error('Error retrieving content from the database:', error);
+    return [];
   }
 };
 
