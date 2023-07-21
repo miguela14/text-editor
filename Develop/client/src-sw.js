@@ -27,4 +27,22 @@ warmStrategyCache({
 registerRoute(({ request }) => request.mode === 'navigate', pageCache);
 
 // TODO: Implement asset caching
-registerRoute();
+
+// Cache JavaScript files with CacheFirst strategy
+registerRoute(
+  /\.(?:js)$/,
+  new CacheFirst({
+    cacheName: 'js-cache',
+    plugins: [
+      new CacheableResponsePlugin({
+        statuses: [0, 200],
+      }),
+      new ExpirationPlugin({
+        maxAgeSeconds: 30 * 24 * 60 * 60, // Cache duration (30 days)
+      }),
+    ],
+  })
+);
+
+// Implement a cache fallback for assets not in the cache
+offlineFallback();
